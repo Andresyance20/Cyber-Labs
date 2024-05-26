@@ -1,0 +1,28 @@
+<div class="login-container">
+  <div class="login-box">
+    <h1>CyberLabs</h1>
+    <form
+      (submit)="login(username.value, password.value); $event.preventDefault()"
+    >
+      <input type="text" #username placeholder="Username" class="login-input" />
+      <input
+        type="password"
+        #password
+        placeholder="Password"
+        class="login-input"
+      />
+      <input #InstructorOrStudent id="InstructorOrStudent" type="checkbox" [checked]="isInstructor" (change)="onTypeChange(InstructorOrStudent.checked)" /> 
+      <label for="InstructorOrStudent">Check if Instructor</label>
+      <button type="button" class="login-button" (click)="redirectToForgotPassword()" style="background-color: #cdd4dd; margin-top: 10px;">Forgot Password?</button>
+      <button type="submit" class="login-button">Login</button>
+      <button
+        type="button"
+        class="login-button"
+        (click)="redirectToCreateAccount()"
+        style="background-color: #1a73e8; margin-top: 10px"
+      >
+        Create New Account
+      </button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,245 @@
+<div class="student-dashboard">
+  <header class="dashboard-header">
+    <div class="header-left">CyberLabs Teacher Dashboard</div>
+    <div class="header-center">Teacher Name, Teaching 2 Courses</div>
+    <div class="header-right">
+      <button (click)="logout()">Logout</button>
+    </div>
+  </header>
+  <div class="main-content">
+    <aside class="sidebar">
+      <ul>
+        <li *ngFor="let course of courses" (click)="selectCourse(course)">
+          {{ course.name }}
+        </li>
+        <li (click)="createCourse()">Create New Course</li>
+        <li (click)="openVmView()">Open Virtual Machine</li>
+      </ul>
+    </aside>
+
+    <section class="content">
+      <div *ngIf="currentView === 'welcome'">
+        <h2>Welcome to CyberLabs (Teacher View)</h2>
+        <p>Select a course from the sidebar to get started!</p>
+      </div>
+      <div *ngIf="currentView === 'courses'">
+        <h2>Courses</h2>
+        <ul>
+          <li *ngFor="let course of courses">{{ course.name }}</li>
+        </ul>
+      </div>
+      <div *ngIf="currentView === 'createLab'" class="form-container">
+        <form (ngSubmit)="submitNewLab()">
+          <div>
+            <label for="labName">Lab Name:</label>
+            <input
+              type="text"
+              id="labName"
+              [(ngModel)]="newLab.name"
+              name="labName"
+              required
+            />
+          </div>
+          <div>
+            <label for="labInstructor">Instructor:</label>
+            <input
+              type="text"
+              id="labInstructor"
+              [(ngModel)]="newLab.instructor"
+              name="labInstructor"
+              required
+            />
+          </div>
+          <div>
+            <label for="labInstructions">Instructions Overview:</label>
+            <input
+              type="text"
+              id="labInstructions"
+              [(ngModel)]="newLab.instructions"
+              name="labInstructions"
+              required
+            />
+          </div>
+          <div>
+            <label for="labDueDate">Due Date:</label>
+            <input
+              type="date"
+              id="labDueDate"
+              [(ngModel)]="newLab.dueDate"
+              name="labDueDate"
+              required
+            />
+          </div>
+          <button type="submit">Create Lab</button>
+        </form>
+      </div>
+
+      <div *ngIf="currentView === 'createCourse'" class="form-container">
+        <h2>Create Course</h2>
+        <form (ngSubmit)="submitNewCourse()">
+          <div>
+            <label for="courseName">Course Name:</label>
+            <input
+              type="text"
+              id="courseName"
+              [(ngModel)]="newCourse.name"
+              name="courseName"
+              required
+            />
+          </div>
+          <div>
+            <label for="instructorName">Instructor Name:</label>
+            <input
+              type="text"
+              id="instructorName"
+              [(ngModel)]="newCourse.instructor"
+              name="instructorName"
+              required
+            />
+          </div>
+          <fieldset>
+            <legend>Students</legend>
+            <div *ngFor="let student of students" class="student-checkbox">
+              <input
+                type="checkbox"
+                id="{{ student.name }}"
+                [(ngModel)]="student.selected"
+                name="{{ student.name }}"
+              />
+              <label for="{{ student.name }}">{{ student.name }}</label>
+            </div>
+          </fieldset>
+          <button type="submit">Create Course</button>
+        </form>
+      </div>
+      <div *ngIf="currentView === 'labs'">
+        <div *ngIf="selectedCourse; else noCourseSelected">
+          <div class="lab-header">
+            <h2>Created Labs for {{ selectedCourse.name }}</h2>
+            <button type="button" class="create-lab-btn" (click)="createLab()">
+              Create Lab
+            </button>
+          </div>
+          <ul>
+            <li
+              *ngFor="let lab of selectedCourse.labs"
+              (click)="selectLab(lab)"
+            >
+              {{ lab.name }} -
+              <span [ngClass]="lab.completion | lowercase">{{
+                lab.completion
+              }}</span>
+            </li>
+          </ul>
+          <div class="student-header">
+            <h2>Enrolled Students for {{ selectedCourse.name }}</h2>
+            <button
+              type="button"
+              class="add-student-btn"
+              (click)="editStudents()"
+            >
+              Edit Students
+            </button>
+          </div>
+          <ul>
+            <li *ngFor="let student of selectedCourse.students">
+              {{ student.name }}
+            </li>
+          </ul>
+        </div>
+        <ng-template #noCourseSelected>
+          <p>Please select a course.</p>
+        </ng-template>
+      </div>
+      <div *ngIf="currentView === 'editLab'" class="form-container">
+        <h2>Edit Lab: {{ newLab.name }}</h2>
+        <form (ngSubmit)="submitUpdatedLab()">
+          <div>
+            <label for="labName">Lab Name:</label>
+            <input
+              type="text"
+              id="labName"
+              [(ngModel)]="newLab.name"
+              name="labName"
+              required
+            />
+          </div>
+          <div>
+            <label for="labInstructor">Instructor:</label>
+            <input
+              type="text"
+              id="labInstructor"
+              [(ngModel)]="newLab.instructor"
+              name="labInstructor"
+              required
+            />
+          </div>
+          <div>
+            <label for="labInstructions">Instructions Overview:</label>
+            <input
+              type="text"
+              id="labInstructions"
+              [(ngModel)]="newLab.instructions"
+              name="labInstructions"
+              required
+            />
+          </div>
+          <div>
+            <label for="labDueDate">Due Date:</label>
+            <input
+              type="date"
+              id="labDueDate"
+              [(ngModel)]="newLab.dueDate"
+              name="labDueDate"
+              required
+            />
+          </div>
+          <button type="submit">Update Lab</button>
+        </form>
+      </div>
+      <div *ngIf="currentView === 'editStudents'" class="form-container">
+        <h2>Edit Students for {{ selectedCourse?.name }}</h2>
+        <form (ngSubmit)="submitEditedStudents()">
+          <fieldset>
+            <legend>Students</legend>
+            <div *ngFor="let student of students" class="student-checkbox">
+              <input
+                type="checkbox"
+                id="{{ student.name }}"
+                [(ngModel)]="student.selected"
+                name="{{ student.name }}"
+              />
+              <label for="{{ student.name }}">{{ student.name }}</label>
+            </div>
+          </fieldset>
+          <button type="submit">Update Students</button>
+        </form>
+      </div>
+      <div *ngIf="currentView === 'currentLab'">
+        <div *ngIf="selectedLab; else noLabSelected" class="lab-details">
+          <div class="lab-details-header">
+            <h2>{{ selectedLab.name }}</h2>
+            <button class="edit-lab-btn" (click)="editLab()">Edit Lab</button>
+          </div>
+          <p class="due-date">Due Date: {{ selectedLab.dueDate }}</p>
+          <p>Instructor: {{ selectedLab.instructor }}</p>
+          <p>Instructions Overview: {{ selectedLab.instructions }}</p>
+          <p>Status: <span [ngClass]="selectedLab.completion | lowercase">{{ selectedLab.completion }}</span></p>
+          <ul>
+            <li *ngFor="let status of selectedLab.studentStatuses">
+              {{ status.name }} - {{ status.status }} {{ status.completionDateTime ? '(' + status.completionDateTime + ')' : '' }}
+            </li>
+          </ul>
+          <div class="input-file-container">
+            <input type="file" (change)="onFileSelected($event)" accept=".pdf"/>
+            <button (click)="submitInstructions()">Submit Detailed Instructions (PDF)</button>
+          </div>
+        </div>
+        <ng-template #noLabSelected>
+          <p>Select a Lab from Your Courses</p>
+        </ng-template>
+      </div>
+      
+    </section>
+  </div>
+</div>

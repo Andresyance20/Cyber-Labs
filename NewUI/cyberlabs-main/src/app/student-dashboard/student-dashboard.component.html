@@ -1,0 +1,65 @@
+<div class="student-dashboard">
+    <header class="dashboard-header">
+      <div class="header-left">
+        CyberLabs Student Dashboard
+      </div>
+      <div class="header-center">
+        Student Name, Enrolled in 4 Courses
+      </div>
+      <div class="header-right">
+        <button (click)="logout()">Logout</button>
+      </div>
+    </header>
+    <div class="main-content">
+    <aside class="sidebar">
+      <ul>
+        <li *ngFor="let course of courses" (click)="selectCourse(course)">{{ course }}</li>
+        <li (click)="openVmView()">Open Virtual Machine</li>
+      </ul>
+    </aside>
+    <section class="content">
+      <div *ngIf="currentView === 'welcome'">
+        <h2>Welcome to CyberLabs (Student View)</h2>
+        <p>Select a course from the sidebar to get started!</p>
+      </div>
+      <div *ngIf="currentView === 'courses'">
+        <h2>Courses</h2>
+        <ul>
+          <li *ngFor="let course of courses">{{ course }}</li>
+        </ul>
+      </div>
+      <div *ngIf="currentView === 'labs'">
+        <div *ngIf="selectedCourse; else noCourseSelected">
+          <h2>Labs for {{ selectedCourse }}</h2>
+          <ul>
+            <li *ngFor="let lab of labs" (click)="selectLab(lab)">
+              {{ lab.name }} - <span [class]="lab.status">{{ lab.status }}</span>
+            </li>
+          </ul>
+        </div>
+        <ng-template #noCourseSelected>
+          <p>Please select a course first.</p>
+        </ng-template>
+      </div>
+      <div *ngIf="currentView === 'currentLab'">
+        <div *ngIf="selectedLab; else noLabSelected" class="lab-details">
+          <h2>{{ selectedLab.name }}</h2>
+          <p>Instructor: {{ selectedLab.instructor }}</p>
+          <p>Instructions Overview: {{ selectedLab.instructions }}</p>
+          <p>Status: <span [ngClass]="selectedLab.status | lowercase">{{ selectedLab.status }}</span></p>
+          <p class="due-date">Due Date: {{ selectedLab.dueDate }}</p>
+          <div class="input-file-container">
+            <input type="file" (change)="onFileSelected($event)" accept=".pdf">
+          </div>
+          <button (click)="submitWork()">Submit PDF</button>
+        </div>
+        <ng-template #noLabSelected>
+          <p>Select a Lab from Your Courses</p>
+        </ng-template>
+      </div>
+      
+      <!-- You can add more divs for other sections like 'Labs' similarly -->
+    </section>
+    </div>  
+  </div>
+  

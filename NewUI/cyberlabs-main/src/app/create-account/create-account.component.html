@@ -1,0 +1,17 @@
+<div class="login-container">
+    <div class="login-box">
+      <h1>Create CyberLabs Account</h1>
+      <form (submit)="createAccount(form.value); $event.preventDefault()" #form="ngForm">
+        <input type="text" ngModel name="username" placeholder="Username" class="login-input" required>
+        <input type="text" ngModel name="fname" placeholder="First Name" class="login-input" required>
+        <input type="text" ngModel name="lname" placeholder="Last Name" class="login-input" required>
+        <input type="email" ngModel name="email" placeholder="Email" class="login-input" required>
+        <input type="password" ngModel name="password" placeholder="Password" class="login-input" required>
+        <input type="password" ngModel name="verifyPassword" placeholder="Verify Password" class="login-input" required>
+        <input #InstructorOrStudent id="InstructorOrStudent" type="checkbox" [checked]="isInstructor" (change)="onTypeChange(InstructorOrStudent.checked)" /> 
+        <label for="InstructorOrStudent">Check if Instructor</label>
+        <button type="submit" class="login-button" [disabled]="!form.valid">Create Account</button>
+      </form>
+    </div>
+  </div>
+  

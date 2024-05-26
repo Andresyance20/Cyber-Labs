@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>VNC Viewer</title>
+    <script src="https://cdn.jsdelivr.net/gh/novnc/noVNC@master/core/rfb.js"></script>
+</head>
+<body>
+    <div id="vncContainer"></div>
+    <script>
+        // WebSocket URL from the VNC proxy creation step
+        const host = 'https://localhost:8006'; // Update with your Proxmox server IP and port.
+        const node = 'pve';
+        const vmId = 100;
+        const ticket = 'PVEVNC:6626BB89::HP0TeWcAd9w6St+HV+gvdJdRkf/vu08Thzwq1zb917qGPaij3fFgdx1eY7VVw0R+uH1ZD4+tvwEViwHDWwJqmvgSKKL6bKvRWV6CZADdUuWYixgukQV+3BNb6mHurHchPbP0ppP4ng+HlL4OWxj0JIkm6jntT7LP57TqQWt2yhtqV6PaHktBDB74hmjL+4eh1GXrC2+OgRO+0TdjTSpuuw/wwTgP2JNCd9VEL9i7782R2NsOunurIXstRtDegb5t8YPN6i8ffvb61Dwqc7nSCw+UwvrpVnOBh745PRCQzBfp4z6rn/PIzQ8h9V4FhXzGwc+yQ1euKp6oxpWYB2TJZQ==';
+        const port = 5900;
+
+        const wsUrl = `${host}/api2/json/nodes/${node}/qemu/${vmId}/vncwebsocket?port=${port}&vncticket=${encodeURIComponent(ticket)}`;
+
+        // Create a noVNC client instance
+        const rfb = new RFB(document.getElementById('vncContainer'), wsUrl, {
+            shared: true,
+            encrypt: true // Use encryption for security
+        });
+
+        // Event listeners to handle connection states
+        rfb.addEventListener('connect', () => {
+            console.log('VNC connection established.');
+        });
+
+        rfb.addEventListener('disconnect', () => {
+            console.log('VNC connection closed.');
+        });
+
+        rfb.addEventListener('securityfailure', (event) => {
+            console.error('Security failure:', event.detail);
+        });
+
+        rfb.addEventListener('connectfailed', (event) => {
+            console.error('Connection failed:', event.detail);
+        });
+
+        // Start the connection
+        rfb.connect();
+    </script>
+</body>
+</html>
